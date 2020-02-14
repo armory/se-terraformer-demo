@@ -7,9 +7,6 @@ provider "aws" {
   profile = "terraform"
 }
 
-variable "environment_name" {
-  default = "test"
-}
 
 resource "aws_s3_bucket" "b" {
   bucket = "terraformer-${var.environment_name}"
