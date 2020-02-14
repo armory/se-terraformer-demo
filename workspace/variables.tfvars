@@ -1,3 +1,1 @@
-variable "environment_name" {
-  default = "testing-variable-file"
-}
+environment_name="fernando-variable-test"
