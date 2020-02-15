@@ -1,1 +1,1 @@
-environment_name="fernando-variable-test"
+environment_name="fernando-knows-his-stuff"
