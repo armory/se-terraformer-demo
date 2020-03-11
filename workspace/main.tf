@@ -11,7 +11,7 @@ variable "environment_name" {
   default = "test"
 }
 
-resource "aws_ecs_task_definition" "service" {
+resource "aws_ecs_task_definition" "service-2" {
   family                = "service"
   container_definitions = "${file("../task-definitions/service.json")}"
 
