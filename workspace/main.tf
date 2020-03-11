@@ -7,11 +7,11 @@ provider "aws" {
   profile = "terraform"
 }
 
-variable "environment_name" {
+variable "service_name" {
   default = "test"
 }
 
-resource "aws_ecs_task_definition" "service-2" {
+resource "aws_ecs_task_definition" "service--${var.service_name}" {
   family                = "service"
   container_definitions = "${file("../task-definitions/service.json")}"
 
