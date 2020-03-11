@@ -11,15 +11,9 @@ variable "environment_name" {
   default = "test"
 }
 
-resource "aws_s3_bucket" "b" {
-  bucket = "terraformer-${var.environment_name}"
-  acl    = "public-read"
+resource "aws_ecs_task_definition" "service" {
+  family                = "service"
+  container_definitions = "${file("../task-definitions/service.json")}"
 
-  tags = {
-    Name = "Bucket for ${var.environment_name}"
-  }
-}
-
-output "test_output" {
-    value = "${aws_s3_bucket.b.arn}"
+  
 }
