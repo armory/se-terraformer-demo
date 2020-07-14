@@ -1,10 +1,10 @@
 terraform {
-#  backend "s3" {}
+  backend "remote" {}
 }
 
 provider "aws" {
   region  = "us-west-2"
-  profile = "default"
+  profile = "terraform"
 }
 
 variable "environment_name" {
