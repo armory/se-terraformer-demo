@@ -4,7 +4,7 @@ terraform {
 
 provider "aws" {
   region  = "us-west-2"
-  profile = "terraform"
+  profile = "default"
 }
 
 variable "environment_name" {
