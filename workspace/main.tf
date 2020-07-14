@@ -8,7 +8,7 @@ provider "aws" {
 }
 
 variable "environment_name" {
-  default = "test"
+  default = "tfcloud"
 }
 
 resource "aws_s3_bucket" "b" {
