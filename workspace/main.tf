@@ -11,6 +11,10 @@ variable "environment_name" {
   default = "tfcloud"
 }
 
+variable "acl_setting" {
+  default = "public-read"
+}
+
 resource "aws_s3_bucket" "b" {
   bucket = "tfe-${var.environment_name}"
   acl    = "public-read"
