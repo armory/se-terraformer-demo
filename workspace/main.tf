@@ -17,7 +17,7 @@ variable "acl_setting" {
 
 resource "aws_s3_bucket" "b" {
   bucket = "tfe-${var.environment_name}"
-  acl    = "public-read"
+  acl    = "${var.acl_setting}"
 
   tags = {
     Name = "Bucket for ${var.environment_name}"
