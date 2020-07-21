@@ -12,7 +12,7 @@ variable "environment_name" {
 }
 
 resource "aws_s3_bucket" "b" {
-  bucket = "spinnaker-test-${var.environment_name}"
+  bucket = "tfe-${var.environment_name}"
   acl    = "public-read"
 
   tags = {
