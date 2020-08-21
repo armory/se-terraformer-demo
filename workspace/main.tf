@@ -1,10 +1,14 @@
 terraform {
-  backend "s3" {}
+  backend "s3" {
+    bucket = "armory-se-terraformer-demo"
+    key = "demo-api-dev.tfstate"
+    region = "us-east-1"
+    encrypt = false
+  }
 }
 
 provider "aws" {
   region  = "us-west-2"
-  profile = "terraform"
 }
 
 variable "environment_name" {
