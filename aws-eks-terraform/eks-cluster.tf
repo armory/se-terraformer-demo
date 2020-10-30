@@ -37,7 +37,7 @@ data "aws_eks_cluster" "cluster" {
 data "aws_eks_cluster_auth" "cluster" {
   name = module.eks.cluster_id
 }
-➜  learn-terraform-provision-eks-cluster git:(master) cat eks-cluster.tf 
+➜  learn-terraform-provision-eks-cluster git:(master) 
 module "eks" {
   source          = "terraform-aws-modules/eks/aws"
   cluster_name    = local.cluster_name
