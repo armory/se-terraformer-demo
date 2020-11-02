@@ -5,7 +5,7 @@ module "eks" {
   subnets         = module.vpc.private_subnets
 
   tags = {
-    Environment = "armory"
+    Environment = "armory-demo"
     GithubRepo  = "terraform-aws-eks"
     GithubOrg   = "terraform-aws-modules"
   }
