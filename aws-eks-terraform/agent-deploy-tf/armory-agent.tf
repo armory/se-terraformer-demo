@@ -5,96 +5,112 @@ provider "kubernetes" {
   load_config_file       = false
 }
 
-resource "kubernetes_namespace" "agent" {
+resource "kubernetes_deployment" "spin_kubesvc" {
   metadata {
-    annotations = {
-      name = "armory-agent"
-    }
-
+    name = "spin-kubesvc"
     labels = {
-      mylabel = "armory-agent"
+      app = "spin"
+      "app.kubernetes.io/name" = "kubesvc"
+      "app.kubernetes.io/part-of" = "spinnaker"
+      cluster = "spin-kubesvc"
+    }
+  }
+
+  spec {
+    replicas = 1
+    selector {
+      match_labels = {
+        app = "spin"
+        cluster = "spin-kubesvc"
+      }
     }
 
-    name = "agent"
-  }
-}
-
-"apiVersion" = "apps/v1"
-"kind" = "Deployment"
-"metadata" = {
-  "labels" = {
-    "app" = "spin"
-    "app.kubernetes.io/name" = "kubesvc"
-    "app.kubernetes.io/part-of" = "spinnaker"
-    "cluster" = "spin-kubesvc"
-  }
-
-  "name" = "spin-kubesvc"
-}
-"spec" = {
-  "replicas" = 1
-  "selector" "matchLabels" {
-    "app" = "spin"
-    "cluster" = "spin-kubesvc"
-  }
-
-  "template" "metadata" "labels" {
-    "app" = "spin"
-    "app.kubernetes.io/name" = "kubesvc"
-    "app.kubernetes.io/part-of" = "spinnaker"
-    "cluster" = "spin-kubesvc"
-  }
-
-  "template" "metadata" "annotations" {
-    "prometheus.io/scrape" = "true"
-    "prometheus.io/path" = "/metrics"
-    "prometheus.io/port" = "8008"
-  }
-
-  "template" "spec" {
-    "serviceAccountName" = "spin-sa"
-    "containers" = {
-      "image" = "armory/kubesvc"
-      "imagePullPolicy" = "IfNotPresent"
-      "name" = "kubesvc"
-      "ports" = {
-        "name" = "health"
-        "containerPort" = 8082
-        "protocol" = "TCP"
-      }
-
-      "ports" = {
-        "name" = "metrics"
-        "containerPort" = 8008
-        "protocol" = "TCP"
-      }
-
-      "readinessProbe" = {
-        "httpGet" = {
-          "port" = "health"
-          "path" = "/health"
+    template {
+      metadata {
+        labels = {
+          app = "spin"
+          "app.kubernetes.io/name" = "kubesvc"
+          "app.kubernetes.io/part-of" = "spinnaker"
+          cluster = "spin-kubesvc"
         }
 
-        "failureThreshold" = 3
-        "periodSeconds" = 10
-        "successThreshold" = 1
-        "timeoutSeconds" = 1
+        annotations = {
+          "prometheus.io/path" = "/metrics"
+          "prometheus.io/port" = "8008"
+          "prometheus.io/scrape" = "true"
+        }
       }
 
-      "terminationMessagePath" = "/dev/termination-log"
-      "terminationMessagePolicy" = "File"
-      "volumeMounts" = {
-        "mountPath" = "/opt/spinnaker/config"
-        "name" = "volume-kubesvc-config"
+      spec {
+        volume {
+          name = "volume-kubesvc-config"
+          config_map {
+            name = "kubesvc-config"
+          }
+        }
+
+        container {
+          name  = "kubesvc"
+          image = "armory/kubesvc"
+          port {
+            name           = "health"
+            container_port = 8082
+            protocol       = "TCP"
+          }
+
+          port {
+            name           = "metrics"
+            container_port = 8008
+            protocol       = "TCP"
+          }
+
+          volume_mount {
+            name       = "volume-kubesvc-config"
+            mount_path = "/opt/spinnaker/config"
+          }
+
+          readiness_probe {
+            http_get {
+              path = "/health"
+              port = "health"
+            }
+
+            timeout_seconds   = 1
+            period_seconds    = 10
+            success_threshold = 1
+            failure_threshold = 3
+          }
+
+          termination_message_path = "/dev/termination-log"
+          image_pull_policy        = "IfNotPresent"
+        }
+        restart_policy       = "Always"
+        service_account_name = "spin-sa"
       }
     }
+  }
+}
 
-    "restartPolicy" = "Always"
-    "volumes" = {
-      "name" = "volume-kubesvc-config"
-      "configMap" = {
-        "name" = "kubesvc-config"
-      }
+resource "kubernetes_service" "kubesvc_metrics" {
+  metadata {
+    name = "kubesvc-metrics"
+    labels = {
+      app = "spin"
+      cluster = "spin-kubesvc"
+    }
+  }
+
+  spec {
+    port {
+      name        = "metrics"
+      protocol    = "TCP"
+      port        = 8008
+      target_port = "metrics"
+    }
+
+    selector = {
+      app = "spin"
+      cluster = "spin-kubesvc"
     }
   }
 }
