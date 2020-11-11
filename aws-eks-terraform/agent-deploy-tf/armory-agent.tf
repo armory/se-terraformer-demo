@@ -11,56 +11,41 @@ resource "kubernetes_deployment" "spin_kubesvc" {
 
     labels = {
       app = "spin"
-
-      "app.kubernetes.io/name" = "kubesvc"
-
-      "app.kubernetes.io/part-of" = "spinnaker"
-
+      app.kubernetes.io/name = "kubesvc"
+      app.kubernetes.io/part-of = "spinnaker"
       cluster = "spin-kubesvc"
     }
   }
 
   spec {
     replicas = 1
-
     selector {
       match_labels = {
         app = "spin"
-
         cluster = "spin-kubesvc"
       }
     }
-
     template {
       metadata {
         labels = {
           app = "spin"
-
-          "app.kubernetes.io/name" = "kubesvc"
-
-          "app.kubernetes.io/part-of" = "spinnaker"
-
+          app.kubernetes.io/name = "kubesvc"
+          app.kubernetes.io/part-of = "spinnaker"
           cluster = "spin-kubesvc"
         }
-
         annotations = {
-          "prometheus.io/path" = "/metrics"
-
-          "prometheus.io/port" = "8008"
-
-          "prometheus.io/scrape" = "true"
+          prometheus.io/path = "/metrics"
+          prometheus.io/port = "8008"
+          prometheus.io/scrape = "true"
         }
       }
-
       spec {
         volume {
           name = "volume-kubesvc-config"
-
           config_map {
             name = "kubesvc-config"
           }
         }
-
         container {
           name  = "kubesvc"
           image = "armory/kubesvc"
@@ -101,33 +86,6 @@ resource "kubernetes_deployment" "spin_kubesvc" {
         restart_policy       = "Always"
         service_account_name = "spin-sa"
       }
-    }
-  }
-}
-
-resource "kubernetes_service" "kubesvc_metrics" {
-  metadata {
-    name = "kubesvc-metrics"
-
-    labels = {
-      app = "spin"
-
-      cluster = "spin-kubesvc"
-    }
-  }
-
-  spec {
-    port {
-      name        = "metrics"
-      protocol    = "TCP"
-      port        = 8008
-      target_port = "metrics"
-    }
-
-    selector = {
-      app = "spin"
-
-      cluster = "spin-kubesvc"
     }
   }
 }
