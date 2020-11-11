@@ -1,7 +1,7 @@
 provider "kubernetes" {
-  host                   = data.aws_eks_cluster.armory-eks-dKIKSYtf.endpoint
-  cluster_ca_certificate = base64decode(data.aws_eks_cluster.armory-eks-dKIKSYtf.certificate_authority[0].data)
-  token                  = data.aws_eks_cluster_auth.armory-eks-dKIKSYtf.token
+  host                   = ${cluster_endpoint}
+  cluster_ca_certificate = ${kubectl_config}
+  token                  = ${config_map_aws_auth}
   load_config_file       = false
 }
 
