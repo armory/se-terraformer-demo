@@ -5,48 +5,16 @@ provider "kubernetes" {
   load_config_file       = false
 }
 
-resource "kubernetes_deployment" "nginx" {
-  metadata {
-    name = "scalable-nginx-example"
-    labels = {
-      App = "ScalableNginxExample"
-    }
+resource "null_resource" "install-agent" {
+  provisioner "local-exec" {
+    command = <<-EOT
+      kustomize build ../agent-deployment \
+        | sed "s/account_name_replace/account_name_replace/g" \
+        | kubectl apply --kubeconfig ../kubecfgs/kubecfg-demo.yaml -f -
+    EOT
+    interpreter = ["/bin/bash", "-c"]
   }
-
-  spec {
-    replicas = 2
-    selector {
-      match_labels = {
-        App = "ScalableNginxExample"
-      }
-    }
-    template {
-      metadata {
-        labels = {
-          App = "ScalableNginxExample"
-        }
-      }
-      spec {
-        container {
-          image = "nginx:1.7.8"
-          name  = "example"
-
-          port {
-            container_port = 80
-          }
-
-          resources {
-            limits {
-              cpu    = "0.5"
-              memory = "512Mi"
-            }
-            requests {
-              cpu    = "250m"
-              memory = "50Mi"
-            }
-          }
-        }
-      }
-    }
-  }
+  depends_on = [
+    null_resource.get-credentials,
+  ]
 }
