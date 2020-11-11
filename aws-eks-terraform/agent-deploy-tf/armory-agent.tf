@@ -5,17 +5,17 @@ provider "kubernetes" {
   load_config_file       = false
 }
 
-resource "kubernetes_namespace" "example" {
+resource "kubernetes_namespace" "agent" {
   metadata {
     annotations = {
-      name = "example-annotation"
+      name = "armory-agent"
     }
 
     labels = {
-      mylabel = "label-value"
+      mylabel = "armory-agent"
     }
 
-    name = "terraform-example-namespace"
+    name = "agent"
   }
 }
 
