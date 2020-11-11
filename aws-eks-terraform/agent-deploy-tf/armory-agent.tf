@@ -5,16 +5,112 @@ provider "kubernetes" {
   load_config_file       = false
 }
 
-resource "null_resource" "install-agent" {
-  provisioner "local-exec" {
-    command = <<-EOT
-      kustomize build ../agent-deployment \
-        | sed "s/account_name_replace/account_name_replace/g" \
-        | kubectl apply --kubeconfig ../kubecfgs/kubecfg-demo.yaml -f -
-    EOT
-    interpreter = ["/bin/bash", "-c"]
+"apiVersion" = "apps/v1"
+
+"kind" = "Deployment"
+
+"metadata" = {
+  "labels" = {
+    "app" = "spin"
+
+    "app.kubernetes.io/name" = "kubesvc"
+
+    "app.kubernetes.io/part-of" = "spinnaker"
+
+    "cluster" = "spin-kubesvc"
   }
-  depends_on = [
-    null_resource.get-credentials,
-  ]
+
+  "name" = "spin-kubesvc"
+}
+
+"spec" = {
+  "replicas" = 1
+
+  "selector" "matchLabels" {
+    "app" = "spin"
+
+    "cluster" = "spin-kubesvc"
+  }
+
+  "template" "metadata" "labels" {
+    "app" = "spin"
+
+    "app.kubernetes.io/name" = "kubesvc"
+
+    "app.kubernetes.io/part-of" = "spinnaker"
+
+    "cluster" = "spin-kubesvc"
+  }
+
+  "template" "metadata" "annotations" {
+    "prometheus.io/scrape" = "true"
+
+    "prometheus.io/path" = "/metrics"
+
+    "prometheus.io/port" = "8008"
+  }
+
+  "template" "spec" {
+    "serviceAccountName" = "spin-sa"
+
+    "containers" = {
+      "image" = "armory/kubesvc"
+
+      "imagePullPolicy" = "IfNotPresent"
+
+      "name" = "kubesvc"
+
+      "ports" = {
+        "name" = "health"
+
+        "containerPort" = 8082
+
+        "protocol" = "TCP"
+      }
+
+      "ports" = {
+        "name" = "metrics"
+
+        "containerPort" = 8008
+
+        "protocol" = "TCP"
+      }
+
+      "readinessProbe" = {
+        "httpGet" = {
+          "port" = "health"
+
+          "path" = "/health"
+        }
+
+        "failureThreshold" = 3
+
+        "periodSeconds" = 10
+
+        "successThreshold" = 1
+
+        "timeoutSeconds" = 1
+      }
+
+      "terminationMessagePath" = "/dev/termination-log"
+
+      "terminationMessagePolicy" = "File"
+
+      "volumeMounts" = {
+        "mountPath" = "/opt/spinnaker/config"
+
+        "name" = "volume-kubesvc-config"
+      }
+    }
+
+    "restartPolicy" = "Always"
+
+    "volumes" = {
+      "name" = "volume-kubesvc-config"
+
+      "configMap" = {
+        "name" = "kubesvc-config"
+      }
+    }
+  }
 }
