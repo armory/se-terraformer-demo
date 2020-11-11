@@ -8,19 +8,25 @@ provider "kubernetes" {
 resource "kubernetes_deployment" "spin_kubesvc" {
   metadata {
     name = "spin-kubesvc"
+
     labels = {
       app = "spin"
+
       "app.kubernetes.io/name" = "kubesvc"
+
       "app.kubernetes.io/part-of" = "spinnaker"
+
       cluster = "spin-kubesvc"
     }
   }
 
   spec {
     replicas = 1
+
     selector {
       match_labels = {
         app = "spin"
+
         cluster = "spin-kubesvc"
       }
     }
@@ -29,14 +35,19 @@ resource "kubernetes_deployment" "spin_kubesvc" {
       metadata {
         labels = {
           app = "spin"
+
           "app.kubernetes.io/name" = "kubesvc"
+
           "app.kubernetes.io/part-of" = "spinnaker"
+
           cluster = "spin-kubesvc"
         }
 
         annotations = {
           "prometheus.io/path" = "/metrics"
+
           "prometheus.io/port" = "8008"
+
           "prometheus.io/scrape" = "true"
         }
       }
@@ -44,6 +55,7 @@ resource "kubernetes_deployment" "spin_kubesvc" {
       spec {
         volume {
           name = "volume-kubesvc-config"
+
           config_map {
             name = "kubesvc-config"
           }
@@ -52,6 +64,7 @@ resource "kubernetes_deployment" "spin_kubesvc" {
         container {
           name  = "kubesvc"
           image = "armory/kubesvc"
+
           port {
             name           = "health"
             container_port = 8082
@@ -84,6 +97,7 @@ resource "kubernetes_deployment" "spin_kubesvc" {
           termination_message_path = "/dev/termination-log"
           image_pull_policy        = "IfNotPresent"
         }
+
         restart_policy       = "Always"
         service_account_name = "spin-sa"
       }
@@ -94,8 +108,10 @@ resource "kubernetes_deployment" "spin_kubesvc" {
 resource "kubernetes_service" "kubesvc_metrics" {
   metadata {
     name = "kubesvc-metrics"
+
     labels = {
       app = "spin"
+
       cluster = "spin-kubesvc"
     }
   }
@@ -110,6 +126,7 @@ resource "kubernetes_service" "kubesvc_metrics" {
 
     selector = {
       app = "spin"
+
       cluster = "spin-kubesvc"
     }
   }
