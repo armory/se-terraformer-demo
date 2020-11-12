@@ -1,13 +1,8 @@
 resource "null_resource" "install-agent" {
   provisioner "local-exec" {
     command = <<-EOT
-      kustomize build ../agent-deployment \
-        | sed "s/account_name_replace/agent-operator/g" \
-        | kubectl apply --kubeconfig ../kubecfgs/kubecfg-demo.yaml -f -
+      kustomize build ../agent-deployment | kubectl apply -f -
     EOT
     interpreter = ["/bin/bash", "-c"]
   }
-  depends_on = [
-    null_resource.get-credentials,
-  ]
 }
