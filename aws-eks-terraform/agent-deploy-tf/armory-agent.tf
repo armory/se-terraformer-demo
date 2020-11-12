@@ -1,7 +1,7 @@
 resource "null_resource" "install-agent" {
   provisioner "local-exec" {
     command = <<-EOT
-      kustomize build ../agent-deployment | kubectl apply -f -
+      kubectl apply -k ../agent-deployment
     EOT
     interpreter = ["/bin/bash", "-c"]
   }
