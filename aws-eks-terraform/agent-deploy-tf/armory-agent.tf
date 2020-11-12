@@ -1,10 +1,3 @@
-provider "kubernetes" {
-  host                   = ${cluster_endpoint}
-  cluster_ca_certificate = ${kubectl_config}
-  token                  = ${config_map_aws_auth}
-  load_config_file       = false
-}
-
 resource "kubernetes_deployment" "spin_kubesvc" {
   metadata {
     name = "spin-kubesvc"
