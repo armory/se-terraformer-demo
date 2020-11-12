@@ -1,11 +1,9 @@
 kubernetes:
   accounts:
-  - name: armory-eks-spinnaker-sa
+  - name: agent-operator
     serviceAccount: true
-    metrics: true
-
 
 clouddriver:
-  grpc: grpc.agent.dev.armory.io:443
+  grpc: vincent-clouddriver.se.armory.io:443
   tls:
     insecureSkipVerify: true
