@@ -1,8 +1,9 @@
 kubernetes:
   accounts:
-  - name: account_name_replace
+  - name: armory-eks-spinnaker-sa
     serviceAccount: true
     metrics: true
+    kubeconfigFile: 
 
 
 clouddriver:
