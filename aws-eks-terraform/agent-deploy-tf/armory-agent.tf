@@ -2,7 +2,7 @@ resource "null_resource" "install-agent" {
   provisioner "local-exec" {
     command = <<-EOT
       kustomize build ../agent-deployment \
-        | sed "s/account_name_replace/account_name_replace/g" \
+        | sed "s/account_name_replace/agent-operator/g" \
         | kubectl apply --kubeconfig ../kubecfgs/kubecfg-demo.yaml -f -
     EOT
     interpreter = ["/bin/bash", "-c"]
