@@ -3,7 +3,6 @@ kubernetes:
   - name: armory-eks-spinnaker-sa
     serviceAccount: true
     metrics: true
-    kubeconfigFile: 
 
 
 clouddriver:
