@@ -5,8 +5,6 @@ resources:
 - deployment.yaml
 - serviceaccount.yaml
 
-namespace: kubesvc
-
 configMapGenerator:
 - files:
   - kubesvc.yaml
