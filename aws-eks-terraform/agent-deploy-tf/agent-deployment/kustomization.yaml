@@ -3,6 +3,7 @@ namespace: agent
 # This produces a deployment for kubesvc standalone
 resources:
 - deployment.yaml
+- serviceaccount.yaml
 
 namespace: kubesvc
 
