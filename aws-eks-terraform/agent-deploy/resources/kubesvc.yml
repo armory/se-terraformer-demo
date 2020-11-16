@@ -1,0 +1,17 @@
+kubernetes:
+  accounts:
+    - name: saas_spinnaker_account_replace
+      kinds: []
+      omitKinds: []
+      serviceAccount: true
+
+clouddriver:
+  grpc: grpc_url_replace
+  insecure: true
+
+server:
+  port: 8082
+  
+prometheus:
+  enabled: true
+  # port: 8008
