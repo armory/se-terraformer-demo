@@ -1,0 +1,33 @@
+#-----------------------------------------------------------------------------------------------------------------
+# RBAC configuration for a kubernetes service account (see providers.yml)
+#-----------------------------------------------------------------------------------------------------------------
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: spin-cluster-role
+rules:
+  - apiGroups:
+      - '*'
+    resources:
+      - '*'
+    verbs:
+      - '*'
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: spin-sa
+  namespace: spinnaker
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: spin-cluster-role-binding
+subjects:
+  - kind: ServiceAccount
+    name: spin-sa
+    namespace: spinnaker
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: spin-cluster-role
