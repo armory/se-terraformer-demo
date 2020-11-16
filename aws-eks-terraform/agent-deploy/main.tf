@@ -11,7 +11,7 @@ resource "null_resource" "kubectl" {
     command = <<-EOT
       kubectl kustomize \
         | sed "s/grpc_url_replace/${var.grpcurl}/g" \
-        | sed "s/saas_spinnaker_account_replace/${var.account}/g" -f -
+        | sed "s/saas_spinnaker_account_replace/${var.account}/g" | kubectl apply -f -
     EOT
     interpreter = ["/bin/bash", "-c"]
   }
