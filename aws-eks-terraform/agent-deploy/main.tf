@@ -1,3 +1,11 @@
+variable "grpcurl" {
+  default = "host-clouddriver.plugin.fqdn.com"
+}
+
+variable "account" {
+  default = "k8s-account"
+}
+
 resource "null_resource" "kubectl" {
   provisioner "local-exec" {
     command = <<-EOT
