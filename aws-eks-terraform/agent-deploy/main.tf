@@ -13,6 +13,10 @@ variable "account" {
   default = "k8s-account"
 }
 
+variable "kubeconfig" {
+  default = "kubeconfig_default"
+}
+
 resource "null_resource" "kubectl" {
   provisioner "local-exec" {
     command = <<-EOT
