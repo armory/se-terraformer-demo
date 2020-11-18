@@ -1,6 +1,6 @@
 kubernetes:
   accounts:
-    - name: saas_spinnaker_account_replace
+    - name: spinnaker_account_replace
       kinds: []
       omitKinds: []
       serviceAccount: true
