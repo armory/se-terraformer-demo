@@ -11,7 +11,7 @@ variable "kubeconfig" {
 }
 
 resource "local_file" "kubeconfig" {
-    content     = var.kubeconfig
+    content     = ${var.kubeconfig}
     filename = "${path.module}/kubeconfig"
 }
 
