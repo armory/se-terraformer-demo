@@ -1,0 +1,217 @@
+{
+  "appConfig": {},
+  "keepWaitingPipelines": false,
+  "lastModifiedBy": "chadtripod",
+  "limitConcurrent": true,
+  "spelEvaluator": "v4",
+  "stages": [
+    {
+      "action": "plan",
+      "artifacts": [
+        {
+          "account": "gitrepo",
+          "artifact": {
+            "artifactAccount": "gitrepo",
+            "id": "5526f2ee-6fcd-437e-bbfe-d229e2042ab6",
+            "metadata": {
+              "subPath": ""
+            },
+            "name": "eks-terraform",
+            "reference": "https://github.com/armory/se-terraformer-demo.git",
+            "type": "git/repo"
+          }
+        }
+      ],
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "dir": "aws-eks-terraform/",
+      "expectedArtifacts": [
+        {
+          "defaultArtifact": {
+            "customKind": true,
+            "id": "a0cb1df0-8e95-42db-980f-985968bf6c3c"
+          },
+          "displayName": "Terraform EKS Plan File",
+          "id": "b1093acf-ebed-49b5-8259-bf2872f8b3ad",
+          "matchArtifact": {
+            "artifactAccount": "embedded-artifact",
+            "id": "3ec7a97f-8bac-40b0-995a-a6b90698469b",
+            "name": "planfile",
+            "type": "embedded/base64"
+          },
+          "useDefaultArtifact": false,
+          "usePriorArtifact": false
+        }
+      ],
+      "failOnFailedExpressions": false,
+      "failPipeline": false,
+      "name": "Run Terraform \"Plan\" to Validate EKS Cluster",
+      "overrides": {},
+      "planForDestroy": false,
+      "refId": "1",
+      "requisiteStageRefIds": [],
+      "targets": [],
+      "terraformVersion": "0.12.21",
+      "type": "terraform",
+      "workspace": ""
+    },
+    {
+      "failPipeline": true,
+      "instructions": "<pre>${#stage('Run Terraform \"Plan\" to Validate EKS Cluster')['outputs']['status']['logs']['plan_stdout']}</pre>",
+      "judgmentInputs": [],
+      "name": "Manual Judgment",
+      "notifications": [],
+      "refId": "2",
+      "requisiteStageRefIds": [
+        "1"
+      ],
+      "type": "manualJudgment"
+    },
+    {
+      "action": "apply",
+      "artifacts": [
+        {
+          "account": "gitrepo",
+          "artifact": {
+            "artifactAccount": "gitrepo",
+            "id": "fc8a115b-e442-4096-8fd9-02d887ad1ed9",
+            "reference": "https://github.com/armory/se-terraformer-demo.git",
+            "type": "git/repo"
+          }
+        }
+      ],
+      "comments": "",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "dir": "aws-eks-terraform/",
+      "expectedArtifacts": [],
+      "failPipeline": false,
+      "name": "Run Terraform \"Apply\" to Build EKS Cluster",
+      "overrides": {},
+      "refId": "3",
+      "requisiteStageRefIds": [
+        "2"
+      ],
+      "terraformVersion": "0.12.21",
+      "type": "terraform",
+      "workspace": ""
+    },
+    {
+      "action": "output",
+      "artifacts": [
+        {
+          "account": "gitrepo",
+          "artifact": {
+            "artifactAccount": "gitrepo",
+            "id": "ff9f361d-211c-428f-9416-84f19245e02d",
+            "reference": "https://github.com/armory/se-terraformer-demo.git",
+            "type": "git/repo"
+          }
+        }
+      ],
+      "comments": "${#stage('Terraform Output')[\"context\"][\"status\"][\"outputs\"][\"cluster_endpoint\"][\"value\"]}",
+      "dir": "aws-eks-terraform/",
+      "name": "Terraform Output",
+      "overrides": {},
+      "refId": "4",
+      "requisiteStageRefIds": [
+        "3"
+      ],
+      "terraformVersion": "0.12.21",
+      "type": "terraform",
+      "workspace": ""
+    },
+    {
+      "failOnFailedExpressions": true,
+      "name": "Outputs EKS MetaData",
+      "refId": "6",
+      "requisiteStageRefIds": [
+        "4"
+      ],
+      "type": "evaluateVariables",
+      "variables": [
+        {
+          "key": "cluster_endpoint",
+          "value": "${#stage('Terraform Output')[\"context\"][\"status\"][\"outputs\"][\"cluster_endpoint\"][\"value\"]}"
+        },
+        {
+          "key": "kubeconfig",
+          "value": "${#stage('Terraform Output')[\"context\"][\"status\"][\"outputs\"][\"kubectl_config\"][\"value\"]}"
+        },
+        {
+          "key": "config_map_aws_auth",
+          "value": "${#stage('Terraform Output')[\"context\"][\"status\"][\"outputs\"][\"config_map_aws_auth\"][\"value\"]}"
+        }
+      ]
+    },
+    {
+      "action": "plan",
+      "artifacts": [
+        {
+          "account": "gitrepo",
+          "artifact": {
+            "artifactAccount": "gitrepo",
+            "id": "104b00e5-bbc6-4440-aca3-f74030d28b26",
+            "reference": "https://github.com/armory/se-terraformer-demo.git",
+            "type": "git/repo"
+          }
+        }
+      ],
+      "dir": "aws-eks-terraform/agent-deploy",
+      "name": "Deploy Armory Agent to EKS",
+      "overrides": {
+        "account": "eks_armory-eks-aKsX3XDk",
+        "grpcurl": "vincent-clouddriver.se.armory.io:443",
+        "kubeconfig": "${kubeconfig}"
+      },
+      "refId": "7",
+      "requisiteStageRefIds": [
+        "6"
+      ],
+      "terraformVersion": "0.12.21",
+      "type": "terraform"
+    },
+    {
+      "failPipeline": true,
+      "instructions": "<pre>${#stage('Deploy Armory Agent to EKS')['outputs']['status']['logs']['plan_stdout']}</pre>",
+      "judgmentInputs": [],
+      "name": "Manual Judgment",
+      "notifications": [],
+      "refId": "8",
+      "requisiteStageRefIds": [
+        "7"
+      ],
+      "type": "manualJudgment"
+    },
+    {
+      "action": "apply",
+      "artifacts": [
+        {
+          "account": "gitrepo",
+          "artifact": {
+            "artifactAccount": "gitrepo",
+            "id": "736898ed-03af-47b1-8d0e-ddf7cbc73718",
+            "reference": "https://github.com/armory/se-terraformer-demo.git",
+            "type": "git/repo"
+          }
+        }
+      ],
+      "comments": "${#stage('Terraform Output')[\"context\"][\"status\"][\"outputs\"][\"cluster_endpoint\"][\"value\"]} \n\n<b>Armory Agent is installed, and ready for Software Deployment!</b>",
+      "dir": "aws-eks-terraform/agent-deploy",
+      "name": "\"Apply\" Agent Install",
+      "overrides": {
+        "account": "eks_armory-eks-aKsX3XDk",
+        "grpcurl": "vincent-clouddriver.se.armory.io:443",
+        "kubeconfig": "${kubeconfig}"
+      },
+      "refId": "9",
+      "requisiteStageRefIds": [
+        "8"
+      ],
+      "terraformVersion": "0.12.21",
+      "type": "terraform"
+    }
+  ],
+  "triggers": [],
+  "updateTs": "1605801245000"
+}
