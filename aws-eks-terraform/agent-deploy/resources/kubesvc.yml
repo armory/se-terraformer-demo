@@ -1,8 +1,8 @@
 kubernetes:
   accounts:
     - name: spinnaker_account_replace
-      kinds: []
-      omitKinds: []
+    # kinds: []
+    # omitKinds: []
       serviceAccount: true
 
 clouddriver:
