@@ -25,7 +25,7 @@ spec:
         prometheus.io/path: "/metrics"
         prometheus.io/port: "8008"
     spec:
-      serviceAccountName: spin-sa
+      serviceAccountName: armory-eks-rX9aSLIR
       containers:
       - image: armory/kubesvc
         imagePullPolicy: IfNotPresent
