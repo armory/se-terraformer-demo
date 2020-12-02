@@ -8,7 +8,8 @@ kubernetes:
 clouddriver:
   grpc: grpc_url_replace
   insecure: false
-
+  tls:
+    insecureSkipVerify: true
 server:
   port: 8082
   
