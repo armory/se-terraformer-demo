@@ -4,6 +4,7 @@ kubernetes:
     # kinds: []
     # omitKinds: []
       serviceAccount: true
+      onlyNamespacedResources: false
 
 clouddriver:
   grpc: grpc_url_replace
