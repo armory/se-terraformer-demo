@@ -4,7 +4,7 @@ kubernetes:
     # kinds: []
     # omitKinds: []
       serviceAccount: true
-      onlyNamespacedResources: false
+    #  onlyNamespacedResources: false # needed for Agent 0.4.0 with namespace 
 
 clouddriver:
   grpc: grpc_url_replace
