@@ -10,7 +10,7 @@ resources:
 
 images:
   - name: armory/kubesvc
-    newTag: 0.4.0    # Version of the agent to use
+    newTag: 0.3.1    # Version of the agent to use
 
 configMapGenerator:
 - name: kubesvc-config
