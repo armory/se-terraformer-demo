@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "us-west-2"
+  region = "eu-west-1"
 
   # Make it faster by skipping something
   skip_get_ec2_platforms      = true
@@ -10,7 +10,7 @@ provider "aws" {
 }
 
 module "object" {
-  source = "./modules/object"
+  source = "../../modules/object"
 
   bucket = module.s3_bucket.s3_bucket_id
   key    = "${random_pet.this.id}-local"
@@ -24,7 +24,7 @@ module "object" {
   }
 }
 module "object_complete" {
-  source = "./modules/object"
+  source = "../../modules/object"
 
   bucket = module.s3_bucket.s3_bucket_id
   key    = "${random_pet.this.id}-complete"
@@ -52,7 +52,7 @@ module "object_complete" {
 }
 
 module "object_locked" {
-  source = "./modules/object"
+  source = "../../modules/object"
 
   bucket = module.s3_bucket_with_object_lock.s3_bucket_id
   key    = "${random_pet.this.id}-locked"
@@ -82,14 +82,14 @@ resource "aws_kms_key" "this" {
 # S3 buckets
 #############
 module "s3_bucket" {
-  source = "./"
+  source = "../../"
 
   bucket        = random_pet.this.id
   force_destroy = true
 }
 
 module "s3_bucket_with_object_lock" {
-  source = "./"
+  source = "../../"
 
   bucket        = "${random_pet.this.id}-with-object-lock"
   force_destroy = true
