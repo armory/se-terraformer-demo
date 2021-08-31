@@ -82,14 +82,14 @@ resource "aws_kms_key" "this" {
 # S3 buckets
 #############
 module "s3_bucket" {
-  source = "../../"
+  source = "./"
 
   bucket        = random_pet.this.id
   force_destroy = true
 }
 
 module "s3_bucket_with_object_lock" {
-  source = "../../"
+  source = "./"
 
   bucket        = "${random_pet.this.id}-with-object-lock"
   force_destroy = true
