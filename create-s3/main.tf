@@ -10,7 +10,7 @@ provider "aws" {
 }
 
 module "object" {
-  source = "../../modules/object"
+  source = "./modules/object"
 
   bucket = module.s3_bucket.s3_bucket_id
   key    = "${random_pet.this.id}-local"
@@ -24,7 +24,7 @@ module "object" {
   }
 }
 module "object_complete" {
-  source = "../../modules/object"
+  source = "./modules/object"
 
   bucket = module.s3_bucket.s3_bucket_id
   key    = "${random_pet.this.id}-complete"
@@ -52,7 +52,7 @@ module "object_complete" {
 }
 
 module "object_locked" {
-  source = "../../modules/object"
+  source = "./modules/object"
 
   bucket = module.s3_bucket_with_object_lock.s3_bucket_id
   key    = "${random_pet.this.id}-locked"
