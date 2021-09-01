@@ -1,7 +1,7 @@
 terraform {
   backend "s3" {
     bucket  = "armory-se-terraformer-demo"
-    key     = "demo-api-dev.tfstate"
+    key     = "demo-s3-web.tfstate"
     region  = "us-east-1"
     encrypt = false
    profile = "terraform"
