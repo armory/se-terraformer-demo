@@ -1,11 +1,5 @@
 terraform {
-  backend "s3" {
-    bucket  = "armory-se-terraformer-demo"
-    key     = "demo-s3-web.tfstate"
-    region  = "us-east-1"
-    encrypt = false
-   profile = "terraform"
-  }
+  backend "s3" {}
 }
 
 provider "aws" {
