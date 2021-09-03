@@ -2,6 +2,10 @@ terraform {
   backend "s3" {}
 }
 
+provider "aws" {
+  region = "us-west-2"
+}
+
 locals {
   bucket_name = "s3-bucket-${random_pet.this.id}"
 }
