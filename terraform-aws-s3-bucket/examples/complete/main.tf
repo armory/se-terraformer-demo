@@ -1,3 +1,7 @@
+terraform {
+  backend "s3" {}
+}
+
 locals {
   bucket_name = "s3-bucket-${random_pet.this.id}"
 }
